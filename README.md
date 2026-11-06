@@ -26,8 +26,8 @@ All language-model interactions use the supplied `mock_llm.py`. No paid or exter
 Clone the repository and navigate to the project directory.
 
 ```bash
-git clone <YOUR_PUBLIC_GITHUB_REPOSITORY_URL>
-cd <YOUR_REPOSITORY_NAME>
+git clone https://github.com/Sandhiya-K1712/instamart-customer-intelligence-copilot.git
+cd instamart-customer-intelligence-copilot
 ```
 
 Create and activate a virtual environment.
