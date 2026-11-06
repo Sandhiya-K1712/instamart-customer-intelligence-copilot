@@ -25,83 +25,66 @@ or external LLM API is required.
 
 ## Reproduce
 
-### Requirements
+Follow these numbered steps from the repository root. The project uses the supplied offline `mock_llm.py`; no paid or external LLM API is required.
 
--   Python 3
+### 1. Create a virtual environment
 
--   Git
-
--   Packages listed in `requirements.txt`
-
-### Setup
-
-Clone the repository and navigate to the project directory.
-
-``` bash
-
-git clone https://github.com/Sandhiya-K1712/instamart-customer-intelligence-copilot.git
-
-cd instamart-customer-intelligence-copilot
+```bash
+python -m venv .venv
 ```
 
-Create and activate a virtual environment.
+### 2. Activate the virtual environment
 
 Windows PowerShell:
 
-``` powershell
-
-python -m venv .venv
-
-.venv\Scripts\Activate.ps1
+```powershell
+.\.venv\Scripts\Activate.ps1
 ```
 
-Install dependencies:
+### 3. Install dependencies
 
-``` bash
-
-pip install -r requirements.txt
+```bash
+python -m pip install -r requirements.txt
 ```
 
-### Generate data
+### 4. Generate the raw data
 
-Run the supplied data generator:
-
-``` bash
-
+```bash
 python generate_data.py
 ```
 
-The generator produces 1,200 customers, 40 products, 13,084 raw orders
-and 164 support tickets, along with policy and agent scenario files.
+The generator produces 1,200 customers, 40 products, 13,084 raw orders and 164 support tickets, along with policy and agent scenario files.
 
-### Run the project
+### 5. Run Part A — Data preparation and SQL analysis
 
-Run the scripts in the following order:
-
-``` bash
-
+```bash
 python src/audit_data.py
-
 python src/clean_data.py
-
 python src/build_database.py
-
 python src/validate_data.py
-
 python src/run_sql.py
-
 python src/eda_analysis.py
+```
 
+### 6. Run Part B — Customer intelligence
+
+```bash
 python src/part_b_analysis.py
+```
 
+### 7. Run Part C — Ticket triage
+
+```bash
 python src/part_c_triage.py
+```
 
+### 8. Run Part D — Support copilot agent
+
+```bash
 python src/part_d_agent.py
 ```
 
-The scripts generate the cleaned datasets, database, analysis outputs,
-trained model, ticket triage results, agent execution logs and
-checkpoint files.
+The scripts generate the cleaned datasets, SQLite database, analysis outputs, trained model, ticket triage results, agent execution logs and checkpoint files.
 
 ## Part A
 
@@ -110,20 +93,13 @@ checkpoint files.
 Audited the raw customer, product, order and ticket datasets.
 
 Key findings:
-
-| Dataset \| Rows \| Important findings \|
-
-\|---\|---:\|---\|
-
-| Customers \| 1,200 \| 61 missing ages, 30 missing genders \|
-
-| Products \| 40 \| No missing values \|
-
-| Orders \| 13,084 \| 119 exact duplicates, 120 nonnumeric amounts, 106
-  negative delivery values \|
-
-| Tickets \| 164 \| 4 empty ticket texts \|
-
+| Dataset | Rows | Important findings |
+|---|---:|---|
+| Customers | 1,200 | 61 missing ages, 30 missing genders |
+| Products | 40 | No missing values |
+| Orders | 13,084 | 119 exact duplicates, 120 nonnumeric amounts, 106
+  negative delivery values |
+| Tickets | 164 | 4 empty ticket texts |
 Additional findings included 2,541 missing delivery-time values, 656
 pending orders and 24 raw city spellings.
 
@@ -148,17 +124,11 @@ pending orders and 24 raw city spellings.
     medians.
 
 Final cleaned orders: **12,309**.
-
-| Order status \| Count \|
-
-\|---\|---:\|
-
-| Completed \| 11,110 \|
-
-| Cancelled \| 1,199 \|
-
-| Pending \| 0 \|
-
+| Order status | Count |
+|---|---:|
+| Completed | 11,110 |
+| Cancelled | 1,199 |
+| Pending | 0 |
 Completed order revenue: **INR 2,998,668.80**.
 
 ### Database and SQL
@@ -225,13 +195,13 @@ Used K-Means clustering and evaluated cluster counts from K=2 to K=8.
 
 Selected **K=4** and assigned the following segment names:
 
-1\. Occasional Shoppers
+1. Occasional Shoppers
 
-2\. Premium Customers
+2. Premium Customers
 
-3\. Frequent Loyalists
+3. Frequent Loyalists
 
-4\. Dormant Customers
+4. Dormant Customers
 
 The Premium Customers segment contained 138 customers and had an average
 monetary value of INR 7,129.70.
@@ -254,17 +224,12 @@ period ending 2025-10-01.
 
 Compared Logistic Regression and Random Forest models using
 training-only preprocessing and cross-validation.
-
-| Model \| Test precision \| Test recall \| Test F1 \|
-
-\|---\|---:\|---:\|---:\|
-
-| Logistic Regression \| 0.6444 \| 0.6517 \| 0.6480 \|
-
-| Random Forest \| 0.6404 \| 0.6404 \| 0.6404 \|
-
-| Logistic Regression with training-only oversampling \| 0.5891 \|
-  0.8539 \| 0.6972 \|
+| Model | Test precision | Test recall | Test F1 |
+|---|---:|---:|---:|
+| Logistic Regression | 0.6444 | 0.6517 | 0.6480 |
+| Random Forest | 0.6404 | 0.6404 | 0.6404 |
+| Logistic Regression with training-only oversampling | 0.5891 |
+  0.8539 | 0.6972 |
 
 The oversampled Logistic Regression model improved recall from 65.17% to
 85.39%.
@@ -289,19 +254,12 @@ Processed 164 support tickets.
 
 Redacted personal information before sending ticket text to the mock
 language model.
-
-| PII type \| Substitutions \|
-
-\|---\|---:\|
-
-| Email addresses \| 55 \|
-
-| Phone numbers \| 91 \|
-
-| Order IDs \| 132 \|
-
-| Total substitutions \| 278 \|
-
+| PII type | Substitutions |
+|---|---:|
+| Email addresses | 55 |
+| Phone numbers | 91 |
+| Order IDs | 132 |
+| Total substitutions | 278 |
 Verified zero remaining email addresses, phone numbers and order IDs
 after redaction.
 
@@ -317,21 +275,13 @@ Input guardrails:
 
 Compared zero-shot and few-shot classification across four categories:
 billing, delivery, fraud and technical.
-
-| Metric \| Zero-shot \| Few-shot \|
-
-\|---\|---:\|---:\|
-
-| Classified tickets \| 147 \| 147 \|
-
-| Correct classifications \| 126 \| 147 \|
-
-| Accuracy \| 85.71% \| 100% \|
-
-| Total tokens \| 11,116 \| 19,696 \|
-
-| Tokens per classified ticket \| 75.62 \| 133.99 \|
-
+| Metric | Zero-shot | Few-shot |
+|---|---:|---:|
+| Classified tickets | 147 | 147 |
+| Correct classifications | 126 | 147 |
+| Accuracy | 85.71% | 100% |
+| Total tokens | 11,116 | 19,696 |
+| Tokens per classified ticket | 75.62 | 133.99 |
 Few-shot prompting improved accuracy by 14.29 percentage points, with an
 additional 8,580 tokens.
 
@@ -363,19 +313,12 @@ eligible tickets.
 ### Ticket routing
 
 Final routing results:
-
-| Route \| Tickets \|
-
-\|---\|---:\|
-
-| support_queue \| 102 \|
-
-| security_team \| 34 \|
-
-| human_review \| 17 \|
-
-| premium_desk \| 11 \|
-
+| Route | Tickets |
+|---|---:|
+| support_queue | 102 |
+| security_team | 34 |
+| human_review | 17 |
+| premium_desk | 11 |
 Generated `outputs/triage_results.csv` and
 `outputs/triage_budget_demo.csv`.
 
@@ -406,17 +349,11 @@ refund-policy chunks.
 ### Policy assistant evaluation
 
 Evaluated 14 questions: 12 answerable and 2 unanswerable.
-
-| Evaluation \| Result \|
-
-\|---\|---:\|
-
-| Expected document retrieved in top 3 \| 12/12 \|
-
-| Expected fact found in answer \| 12/12 \|
-
-| Correct unanswerable fallbacks \| 2/2 \|
-
+| Evaluation | Result |
+|---|---:|
+| Expected document retrieved in top 3 | 12/12 |
+| Expected fact found in answer | 12/12 |
+| Correct unanswerable fallbacks | 2/2 |
 Compared with zero-overlap chunking:
 
 -   Zero-overlap chunks: 13.
@@ -458,25 +395,15 @@ retrieve policies, calculate refunds and either issue or escalate the
 request.
 
 ### Scenario results
-
-| Scenario \| Status \| Refund amount (INR) \| Model calls \| Tokens \|
-
-\|---\|---\|---:\|---:\|---:\|
-
-| S1 \| REFUND \| 128.25 \| 5 \| 1,127 \|
-
-| S2 \| REFUND \| 135.00 \| 5 \| 1,127 \|
-
-| S3 \| ESCALATE \| 1,999.00 \| 5 \| 1,114 \|
-
-| S4 \| DENIED \| 0.00 \| 4 \| 785 \|
-
-| S5 \| DENIED \| 0.00 \| 3 \| 472 \|
-
-| S6 \| NOT_FOUND \| 0.00 \| 2 \| 163 \|
-
-| S7 \| FALLBACK_MAX_ITERATIONS \| Not issued \| 6 \| 3,270 \|
-
+| Scenario | Status | Refund amount (INR) | Model calls | Tokens |
+|---|---|---:|---:|---:|
+| S1 | REFUND | 128.25 | 5 | 1,127 |
+| S2 | REFUND | 135.00 | 5 | 1,127 |
+| S3 | ESCALATE | 1,999.00 | 5 | 1,114 |
+| S4 | DENIED | 0.00 | 4 | 785 |
+| S5 | DENIED | 0.00 | 3 | 472 |
+| S6 | NOT_FOUND | 0.00 | 2 | 163 |
+| S7 | FALLBACK_MAX_ITERATIONS | Not issued | 6 | 3,270 |
 ### Safety limits
 
 Tested three safeguards:
